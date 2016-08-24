@@ -1,5 +1,5 @@
 /*
- * (C) Copyright 2014,2016 Hewlett Packard Enterprise Development Company LP.
+ * (C) Copyright 2014-2016 Hewlett Packard Enterprise Development LP
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -405,7 +405,7 @@ public class ThresholdingEngineAlarmTest extends TopologyTestCase {
     }
 
     @Override
-    public void updateState(String id, AlarmState state) {
+    public void updateState(String id, AlarmState state, long msTimeStamp) {
       findById(id).setState(state);
     }
 
@@ -432,6 +432,17 @@ public class ThresholdingEngineAlarmTest extends TopologyTestCase {
         }
       }
       return updated;
+    }
+
+    @Override
+    public void updateSubAlarmState(String subAlarmId, AlarmState subAlarmState) {
+      for (final Alarm alarm : alarms) {
+        for (final SubAlarm subAlarm : alarm.getSubAlarms()) {
+          if (subAlarm.getId().equals(subAlarmId)) {
+            subAlarm.setState(subAlarmState);
+          }
+        }
+      }
     }
 
     public boolean deleteAlarm(final Alarm toDelete) {

@@ -1,5 +1,6 @@
 /*
  * Copyright 2016 FUJITSU LIMITED
+ * (C) Copyright 2016 Hewlett Packard Enterprise Development LP
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
@@ -28,6 +29,7 @@ import com.google.common.collect.ImmutableSortedMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
 import org.apache.commons.codec.digest.DigestUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -134,20 +136,19 @@ public class AlarmSqlImpl
   }
 
   @Override
-  public void updateState(String id, AlarmState state) {
+  public void updateState(String id, AlarmState state, long msTimestamp) {
     Transaction tx = null;
     Session session = null;
     try {
 
       session = sessionFactory.openSession();
       tx = session.beginTransaction();
-
-      final DateTime now = DateTime.now();
+      final DateTime dt = new DateTime(msTimestamp);
 
       final AlarmDb alarm = (AlarmDb) session.get(AlarmDb.class, id);
       alarm.setState(state);
-      alarm.setUpdatedAt(now);
-      alarm.setStateUpdatedAt(now);
+      alarm.setUpdatedAt(dt);
+      alarm.setStateUpdatedAt(dt);
 
       session.update(alarm);
 
@@ -210,6 +211,7 @@ public class AlarmSqlImpl
                 .setAlarm(alarm)
                 .setSubExpression(session.get(SubAlarmDefinitionDb.class, subAlarm.getAlarmSubExpressionId()))
                 .setExpression(subAlarm.getExpression().getExpression())
+                .setState(subAlarm.getState())
                 .setUpdatedAt(now)
                 .setCreatedAt(now)
                 .setId(subAlarm.getId())
@@ -258,6 +260,34 @@ public class AlarmSqlImpl
       }
     }
 
+  }
+
+  @Override
+  public void updateSubAlarmState(String subAlarmId, AlarmState subAlarmState) {
+    Transaction tx = null;
+    Session session = null;
+    try {
+
+      session = sessionFactory.openSession();
+      tx = session.beginTransaction();
+
+      final DateTime now = DateTime.now();
+
+      final SubAlarmDb subAlarm = (SubAlarmDb) session.get(SubAlarmDb.class, subAlarmId);
+      subAlarm.setState(subAlarmState);
+      subAlarm.setUpdatedAt(now);
+
+      session.update(subAlarm);
+
+      tx.commit();
+      tx = null;
+
+    } finally {
+      this.rollbackIfNotNull(tx);
+      if (session != null) {
+        session.close();
+      }
+    }
   }
 
   @Override
