@@ -241,6 +241,23 @@ public class AlarmDefinitionSqlImpl
     return subExpressions;
   }
 
+  /**
+   * Rollbacks passed {@code tx} transaction if such is not null.
+   * Assumption is being made that {@code tx} being null means transaction
+   * has been successfully comitted.
+   *
+   * @param tx {@link Transaction} object
+   */
+  private void rollbackIfNotNull(final Transaction tx) {
+    if (tx != null) {
+      try {
+        tx.rollback();
+      } catch (RuntimeException rbe) {
+        LOGGER.error("Couldn’t roll back transaction", rbe);
+      }
+    }
+  }
+
   @Override
   public void deleteByDefinitionId(final String alarmDefinitionId) {
     Transaction tx = null;
