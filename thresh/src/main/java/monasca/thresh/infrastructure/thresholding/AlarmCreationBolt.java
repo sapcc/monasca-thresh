@@ -82,7 +82,7 @@ public class AlarmCreationBolt extends BaseRichBolt {
                            AlarmDAO alarmDAO) {
     this.alarmDefDAO = alarmDefDAO;
     this.alarmDAO = alarmDAO;
-    this.keepAlarmDefs = true;
+    this.keepAlarmDefs = false;
   }
 
   @Override

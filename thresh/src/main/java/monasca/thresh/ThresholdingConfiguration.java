@@ -61,7 +61,7 @@ public class ThresholdingConfiguration implements Serializable {
 
   @NotNull public Integer alarmDelay = 30;
 
-  @NotNull public Boolean keepAlarmDefs = Boolean.TRUE;
+  @NotNull public Boolean keepAlarmDefs = Boolean.FALSE;
 
   /** Namespaces for which metrics are received sporadically. */
   @NotNull public Set<String> sporadicMetricNamespaces;
