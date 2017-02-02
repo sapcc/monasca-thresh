@@ -238,4 +238,30 @@ public class AlarmDefinitionSqlImpl
 
     return subExpressions;
   }
+
+  @Override
+  public void deleteByDefinitionId(final String alarmDefinitionId) {
+    Transaction tx = null;
+    Session session = null;
+
+    try {
+      session = sessionFactory.openSession();
+      tx = session.beginTransaction();
+
+      session
+              .getNamedQuery(AlarmDefinitionDb.Queries.DELETE_BY_ID)
+              .setString("id", alarmDefinitionId)
+              .executeUpdate();
+
+      tx.commit();
+      tx = null;
+
+    } finally {
+      this.rollbackIfNotNull(tx);
+      if (session != null) {
+        session.close();
+      }
+    }
+
+  }
 }
