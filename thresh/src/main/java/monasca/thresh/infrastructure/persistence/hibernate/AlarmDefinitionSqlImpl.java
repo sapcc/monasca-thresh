@@ -45,6 +45,8 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactor;
 
 
 /**
@@ -54,6 +56,8 @@ import org.hibernate.criterion.Restrictions;
  */
 public class AlarmDefinitionSqlImpl
     implements AlarmDefinitionDAO {
+
+  private static final Logger LOGGER = LoggerFactory.getLogger(AlarmSqlImpl.class);
 
   private final SessionFactory sessionFactory;
 
