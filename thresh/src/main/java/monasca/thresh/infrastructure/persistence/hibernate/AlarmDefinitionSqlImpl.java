@@ -46,7 +46,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Property;
 import org.hibernate.criterion.Restrictions;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactor;
+import org.slf4j.LoggerFactory;
 
 
 /**
