@@ -115,7 +115,9 @@ public class AlarmThresholdingBolt extends BaseRichBolt {
       }
       else if (EventProcessingBolt.ALARM_DEFINITION_EVENT_STREAM_ID.equals(tuple.getSourceStreamId())) {
         String eventType = tuple.getString(0);
-        if (EventProcessingBolt.UPDATED.equals(eventType)) {
+        if (EventProcessingBolt.DELETED.equals(eventType)) {
+          handle((AlarmDefinitionDeletedEvent) tuple.getValue(1));
+        } else if (EventProcessingBolt.UPDATED.equals(eventType)) {
           handle((AlarmDefinitionUpdatedEvent) tuple.getValue(1));
         }
       } else if (EventProcessingBolt.METRIC_SUB_ALARM_EVENT_STREAM_ID.equals(tuple
@@ -167,6 +169,18 @@ public class AlarmThresholdingBolt extends BaseRichBolt {
             event.alarmDefinitionId, entry.getKey(), entry.getValue());
       }
     }
+  }
+
+  private void handle(AlarmDefinitionDeletedEvent event) {
+    final AlarmDefinition alarmDefinition = alarmDefinitions.get(event.alarmDefinitionId);
+    if (alarmDefinition == null) {
+      // This is OK. No Alarms are using this AlarmDefinition
+      logger.debug("Removal of AlarmDefinition {} skipped. Not in use by this bolt",
+              event.alarmDefinitionId);
+      return;
+    }
+    logger.info("Removing AlarmDefinition {}", event.alarmDefinitionId);
+    alarmDefinitions.remove(event.alarmDefinitionId);
   }
 
   @Override
