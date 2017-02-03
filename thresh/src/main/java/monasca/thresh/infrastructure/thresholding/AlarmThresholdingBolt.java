@@ -19,6 +19,7 @@ package monasca.thresh.infrastructure.thresholding;
 
 import monasca.common.configuration.KafkaProducerConfiguration;
 import monasca.common.model.event.AlarmDefinitionUpdatedEvent;
+import monasca.common.model.event.AlarmDefinitionDeletedEvent;
 import monasca.common.model.event.AlarmStateTransitionedEvent;
 import monasca.common.model.event.AlarmUpdatedEvent;
 import monasca.common.model.alarm.AlarmState;
