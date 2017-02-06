@@ -215,12 +215,12 @@ public class AlarmThresholdingBolt extends BaseRichBolt {
     AlarmState initialState = alarm.getState();
     // Wait for all sub alarms to have a state before evaluating to prevent flapping on startup
     if (allSubAlarmsHaveState(alarm)) {
-      alarmDef = alarmDefinitions.get(alarm.getAlarmDefinitionId());
-      if (alarmDef == null) {
+      final AlarmDefinition alarmDefinition = alarmDefinitions.get(alarm.getAlarmDefinitionId());
+      if (alarmDefinition == null) {
         logger.debug("Alarm-Definition for sub-alarm {} already removed", subAlarm);
         return;
       }
-      if (alarm.evaluate(alarmDef).getAlarmExpression()) {
+      if (alarm.evaluate(alarmDefinition.getAlarmExpression())) {
         changeAlarmState(alarm, initialState, alarm.getStateChangeReason());
       }
     }
