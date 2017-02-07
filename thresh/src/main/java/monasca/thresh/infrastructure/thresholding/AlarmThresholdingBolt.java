@@ -217,7 +217,7 @@ public class AlarmThresholdingBolt extends BaseRichBolt {
     if (allSubAlarmsHaveState(alarm)) {
       final AlarmDefinition alarmDefinition = alarmDefinitions.get(alarm.getAlarmDefinitionId());
       if (alarmDefinition == null) {
-        logger.warn("Alarm-Definition for sub-alarm {} already removed", subAlarm);
+        logger.debug("Alarm-Definition for sub-alarm {} already removed", subAlarm);
         return;
       }
       if (alarm.evaluate(alarmDefinition.getAlarmExpression())) {
